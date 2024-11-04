@@ -1,3 +1,5 @@
+
+
 <?php
 // Activare afișare erori pentru depanare
 ini_set('display_errors', 1);

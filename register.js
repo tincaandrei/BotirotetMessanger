@@ -1,7 +1,10 @@
+
+
+
 document.querySelector('#register-form').addEventListener('submit', function (event) {
     event.preventDefault(); // Previne trimiterea default a formularului
     const formData = new FormData(this);
-
+    
     fetch('register.php', {
         method: 'POST',
         body: formData
@@ -35,3 +38,4 @@ document.querySelector('#register-form').addEventListener('submit', function (ev
         messageContainer.scrollIntoView({ behavior: 'smooth' }); // Asigură afișarea completă a mesajului
     });
 });
+
