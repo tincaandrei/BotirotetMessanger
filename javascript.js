@@ -2,6 +2,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault(); // Previne trimiterea formularului
 
     const formData = new FormData(this);
+
     fetch('login.php', {
         method: 'POST',
         body: formData
