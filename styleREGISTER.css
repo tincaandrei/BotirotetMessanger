@@ -1,0 +1,102 @@
+/* Style for the register container */
+body, html {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.register-box {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  padding: 40px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  text-align: center;
+}
+
+.register-box h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.input-box {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 10px;
+  padding-left: 30px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.input-box .icon {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+}
+
+button.register-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button.register-button:hover {
+  background-color: #555;
+}
+
+p.login {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+p.login a {
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+p.login a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #e74c3c; /* Culoare roșie pentru a indica eroarea */
+  font-size: 14px;
+  margin-top: 15px; /* Spațiu pentru a-l separa de buton */
+  text-align: center;
+}
+
+.message-container {
+  margin-top: 20px; /* Ajustează acest spațiu după cum dorești */
+}
+
+
