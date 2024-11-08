@@ -1,0 +1,143 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    overflow: hidden; /* Ascunde scroll-ul */
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    width: 100vw; /* Lățime completă a ferestrei */
+    height: 100vh; /* Înălțime completă a ferestrei */
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    overflow: hidden; /* Ascunde scroll-ul intern */
+}
+
+/* Sidebar */
+.sidebar {
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.username {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.friends {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.friend {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Chat Area */
+.chat-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.search-bar {
+    position: relative;
+    width: 80%;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 8px 30px 8px 10px;
+    border: 1px solid #000;
+    border-radius: 20px;
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+}
+
+.profile-pic img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+/* Chat Box */
+.chat-box {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 60%;
+}
+
+.message.left {
+    background-color: #007BFF;
+    color: white;
+    align-self: flex-start;
+}
+
+.message.right {
+    background-color: #FF4D4D;
+    color: white;
+    align-self: flex-end;
+}
+
+/* Message Input */
+.message-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+.emoji {
+    font-size: 24px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.message-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+}
