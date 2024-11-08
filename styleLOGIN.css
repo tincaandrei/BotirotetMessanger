@@ -122,5 +122,13 @@ h1 {
   text-decoration: underline;
 }
 
+.input-box #eye-icon {
+  position: absolute;
+  top: 50%;
+  left: 255px;
+  transform: translateY(-50%);
+  color: rgba(7, 7, 7, 0.7);
+  cursor: pointer;
+}
 
 

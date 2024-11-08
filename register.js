@@ -1,7 +1,10 @@
+
+
+
 document.querySelector('#register-form').addEventListener('submit', function (event) {
     event.preventDefault(); // Previne trimiterea default a formularului
     const formData = new FormData(this);
-
+    
     fetch('register.php', {
         method: 'POST',
         body: formData
@@ -20,12 +23,13 @@ document.querySelector('#register-form').addEventListener('submit', function (ev
         if (data.status === 'error') {
             messageContainer.innerHTML = `<div class="error-message">${data.message}</div>`;
             messageContainer.classList.add('visible');
-            messageContainer.scrollIntoView({ behavior: 'smooth' }); // Asigură afișarea completă a mesajului
+           
         } else {
             messageContainer.innerHTML = `<div class="success-message">${data.message}</div>`;
             messageContainer.classList.add('visible');
-            messageContainer.scrollIntoView({ behavior: 'smooth' }); // Asigură afișarea completă a mesajului
+            
         }
+        messageContainer.scrollIntoView({ behavior: 'smooth' }); // Asigură afișarea completă a mesajului
     })
     .catch(error => {
         console.error('Error:', error);
@@ -35,3 +39,4 @@ document.querySelector('#register-form').addEventListener('submit', function (ev
         messageContainer.scrollIntoView({ behavior: 'smooth' }); // Asigură afișarea completă a mesajului
     });
 });
+

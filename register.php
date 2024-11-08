@@ -19,6 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     $phone_number = $conn->real_escape_string($_POST['phone_number']);
+    if (isset($_POST['use2fa'])) {
+        $is_2fa_enabled = 1;
+    } else {
+        $is_2fa_enabled = 0;
+    }
 
     // Verificare dacă numele de utilizator există deja
     $check_sql = "SELECT * FROM users WHERE username = ?";
@@ -54,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     // Inserare în baza de date
-    $sql = "INSERT INTO users (username, email, password, phone_number) VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO users (username, email, password, phone_number, is_2fa_enabled) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     if ($stmt === false) {
         echo json_encode(['status' => 'error', 'message' => 'Error preparing statement: ' . $conn->error]);
@@ -62,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    $stmt->bind_param("ssss", $username, $email, $hashed_password, $phone_number);
+    $stmt->bind_param("ssssi", $username, $email, $hashed_password, $phone_number, $is_2fa_enabled);
 
     if ($stmt->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Registration successful!']);

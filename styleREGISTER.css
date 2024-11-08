@@ -100,3 +100,19 @@ p.login a:hover {
 }
 
 
+/*2fa checkbox alignment code*/
+
+.options {
+  display: flex;
+  justify-content: flex-start; 
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+}
+.options label {
+  margin-left: 0px;
+}
+.options {
+  margin-left: auto;
+  padding-right: 20px; 
+}

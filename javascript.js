@@ -2,6 +2,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault(); // Previne trimiterea formularului
 
     const formData = new FormData(this);
+
     fetch('login.php', {
         method: 'POST',
         body: formData
@@ -57,4 +58,22 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
-  
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Reference to the eye icon and password input field
+    const eyeIcon = document.getElementById('eye-icon');
+    const passwordInput = document.querySelector('input[name="password"]');
+
+    // Event listener to toggle password visibility when the eye icon is clicked
+    eyeIcon.addEventListener('click', function () {
+        // Toggle password visibility
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text'; // Reveal the password
+            eyeIcon.innerHTML = '&#128064'; // Change to closed eye (with slash)
+        } else if (passwordInput.type === 'text') {
+            passwordInput.type = 'password'; // Hide the password
+            eyeIcon.innerHTML = '&#128065;'; // Change to open eye
+        }
+    });
+});
+
