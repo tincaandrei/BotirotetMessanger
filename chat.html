@@ -1,18 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Botirotet Chat App</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat</title>
+    <link rel="stylesheet" href="chat.css">
 </head>
 <body>
-  <div class="container">
-    <!-- Message showing successful login -->
-    <div class="success-message">
-      <h1>Successfully Logged In</h1>
-      <p>Welcome to Botirotet Chat App!</p>
+    <div class="container">
+        <!-- Sidebar cu prieteni -->
+        <div class="sidebar">
+            <div class="username">Username aici</div>
+            <div class="friends">
+                <div class="friend">PersoanaX</div>
+                <div class="friend">PersoanaY</div>
+            </div>
+        </div>
+        
+        <!-- Zona de chat -->
+        <div class="chat-area">
+            <!-- Bara de căutare și imagine profil -->
+            <div class="header">
+                <div class="search-bar">
+                    <input type="text" placeholder="Caută...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="profile-pic">
+                    <img src="botirotet.png" alt="Profile Picture">
+                </div>
+            </div>
+
+            <!-- Mesaje -->
+            <div class="chat-box">
+                <div class="message left">Salut!</div>
+                <div class="message left">Ce faci?</div>
+                <div class="message left">Cum merge?</div>
+                <div class="message right">Bine, tu?</div>
+                <div class="message right">Foarte bine!</div>
+            </div>
+            
+            <!-- Zona de scriere mesaje -->
+            <div class="message-input">
+                <span class="emoji">😊</span>
+                <input type="text" placeholder="Type a message...">
+            </div>
+        </div>
     </div>
-  </div>
 </body>
 </html>

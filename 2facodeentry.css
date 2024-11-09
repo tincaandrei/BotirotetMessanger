@@ -1,0 +1,103 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-image: url("2faphoto.jpg");
+    background-size: cover; /* Acoperă întregul fundal */
+    background-position: center; /* Centrează imaginea */
+    background-repeat: no-repeat; /* Evită repetarea imaginii */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8); /* Fundal alb semi-transparent */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 620px;
+    height: 380px;
+}
+
+.icon img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 34px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+p{
+    font-size: 22px;  
+}
+
+
+.code-entry-form {
+    display: flex;
+    flex-direction: row; /* Schimbă direcția în rând */
+    gap: 15px; /* Spațiu între casete */
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.code-entry-form {
+    display: flex;
+    flex-direction: column; /* Pune casetele și butonul pe coloană */
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.code-input-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.code-input {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.code-input:focus {
+    outline: none;
+    border-color: #70cff5;
+    box-shadow: 0 0 5px rgba(106, 232, 248, 0.5);
+}
+
+.verify-button {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    color: #fff;
+    background-color: #70cff5;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.verify-button:hover {
+    background-color: #05596e;
+}
