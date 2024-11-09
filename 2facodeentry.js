@@ -1,5 +1,7 @@
 const inputs = document.querySelectorAll(".code-input");
 
+let otp = '';
+
 inputs.forEach((input, index) => {
     input.addEventListener("input", (event) => {
         const value = event.target.value;
@@ -11,8 +13,11 @@ inputs.forEach((input, index) => {
             event.target.value = ""; // Ștergem valoarea dacă nu este o cifră
         } else {
             event.target.setCustomValidity(""); // Resetăm mesajul de eroare pentru valoare validă
+            otp += value;
             if (index < inputs.length - 1) {
                 inputs[index + 1].focus();
+            }else{
+                document.querySelector('.code-entry-form').submit(); // Daca se ajunge la cea de a 6-a cifra se face submit automat 
             }
         }
     });

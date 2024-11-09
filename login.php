@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $title = "Your OTP";
                 mail($row['email'], $title, "Here is your one time login key:    $otp");
 
-                $response = ["status" => "success", "redirect" => "2facodeentry.html"]; 
+                $response = ["status" => "success", "redirect" => "2facodeentry.php"]; 
                 
                 
             }else{
