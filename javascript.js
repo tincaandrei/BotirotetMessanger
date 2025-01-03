@@ -65,12 +65,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const passwordInput = document.querySelector('input[name="password"]');
 
     // Event listener to toggle password visibility when the eye icon is clicked
-    eyeIcon.addEventListener('click', function () {
-        // Toggle password visibility
+    eyeIcon.addEventListener('mousedown', function () {
+        // Reveal the password when cursor is over the icon
         if (passwordInput.type === 'password') {
-            passwordInput.type = 'text'; // Reveal the password
+            passwordInput.type = 'text'; // Show the password
             eyeIcon.innerHTML = '&#128064'; // Change to closed eye (with slash)
-        } else if (passwordInput.type === 'text') {
+        }
+    });
+
+    eyeIcon.addEventListener('mouseup', function () {
+        // Hide the password when cursor leaves the icon
+        if (passwordInput.type === 'text') {
             passwordInput.type = 'password'; // Hide the password
             eyeIcon.innerHTML = '&#128065;'; // Change to open eye
         }
