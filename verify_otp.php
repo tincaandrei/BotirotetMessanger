@@ -8,7 +8,7 @@ if(isset($_POST['otp'])){
 
     if ($user_otp == $session_otp) {
         unset($_SESSION['otp']); 
-        header("Location: chat.html"); 
+        header("Location: chat.php"); 
         exit(); 
     } else {
        

@@ -22,7 +22,7 @@
             if(isset($_SESSION['error'])):?>
                 <div style="color :red;"><?php echo $_SESSION['error']; unset($_SESSION['error']); ?></div>
         <?php endif;?> 
-
+        <!-- End of PHP code  -->
         <form class="code-entry-form" action="verify_otp.php" method="post">
             <div class="code-input-container">
                 <input type="text" name="otp[]" maxlength="1" class="code-input" inputmode="numeric" pattern="[0-9]" required title="Please enter a number between 0 and 9">
