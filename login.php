@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+
+
+
 // Conexiunea la baza de date
 $servername = "localhost";
 $username = "root"; // Nume utilizator pentru baza de date
@@ -26,8 +29,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         if (password_verify($pass, $row['password'])) {
+            $_SESSION['username'] = $user;
+            $_SESSION['user_id'] = $row['id'];
            if($row['is_2fa_enabled'] == 1){
                 $otp = rand(100000, 999999);
+                
                 //store the otp in a session variable
                 $_SESSION['otp'] = $otp;
                 //send email with the otp to the user
@@ -35,12 +41,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $title = "Your OTP";
                 mail($row['email'], $title, "Here is your one time login key:    $otp");
 
-                $response = ["status" => "success", "redirect" => "2facodeentry.html"]; 
-                
-                
+                $response = ["status" => "success", "redirect" => "2facodeentry.php"];              
             }else{
-                $_SESSION['username'] = $user;
-                $response = ["status" => "success", "redirect" => "chat.html"];      
+                
+                $response = ["status" => "success", "redirect" => "chat.php"];      
            }
         } else {
             $response = ["status" => "error", "message" => "Invalid username or password!"];
