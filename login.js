@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
     // Reference to the eye icon and password input field
     const eyeIcon = document.getElementById('eye-icon');
     const passwordInput = document.querySelector('input[name="password"]');
@@ -81,5 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+
 
 
