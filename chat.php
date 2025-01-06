@@ -25,6 +25,14 @@ $user_id = $_SESSION['user_id'];
         <!-- Zona de chat -->
         <div class="chat-area">
             <!-- Bara de căutare și imagine profil -->
+            <div>
+                <input type="checkbox" class="checkbox" id="chk" />
+                <label class="label" for="chk">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                    <div class="ball"></div>
+                </label>
+            </div>
             <div class="header">
                 <div class="selected-friend" id="selected-friend">Selected friend: None</div>
                 <div class="search-bar">
@@ -151,6 +159,8 @@ $user_id = $_SESSION['user_id'];
                 chatBox.appendChild(messageElement);
             }
         });
+
+        
     </script>
 
     <style>
@@ -180,6 +190,72 @@ $user_id = $_SESSION['user_id'];
         }
         .friend:hover {
             background-color: #f0f0f0;
+        }
+
+        @import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            transition: background 0.2s linear;
+        }
+
+        body.dark {
+            background: #292C35;
+        }
+
+        .checkbox {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .label {
+            background-color: #111;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px;
+            position: relative;
+            height: 13px;
+            width: 25px;
+            transform: scale(1.5);
+            margin-left: 1100px;
+            margin-top: 10px;
+        }
+
+        .label .ball {
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            height: 11px;
+            width: 11px;
+            transform: translateX(0px);
+            transition: transform 0.2s linear;
+        }
+
+        .checkbox:checked + .label .ball {
+            transform: translateX(12px);
+        }
+
+
+        .fa-moon {
+            color: #f1c40f;
+        }
+
+        .fa-sun {
+            color: #f39c12;
         }
     </style>
 </body>
