@@ -1,6 +1,9 @@
 <?php
 session_start();
 
+
+
+
 // Conexiunea la baza de date
 $servername = "localhost";
 $username = "root"; // Nume utilizator pentru baza de date

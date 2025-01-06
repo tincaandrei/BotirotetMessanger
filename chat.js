@@ -1,68 +1,107 @@
-
 const express = require('express');
-const mysql = require('mysql');
-const bodyParser = require('body-parser');
-const app = express();
-//using axios for testing the database conection with 'hardocded' values
-const axios = require('axios');
-
-// mikey mouse solution to use both php and nodeJs 
+const http = require('http');
+const { Server } = require('socket.io');
 const cors = require('cors');
-app.use(cors());  
+const bodyParser = require('body-parser');
+const mysql = require('mysql');
 
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: '*', // Allow all origins
+        methods: ['GET', 'POST']
+    }
+});
 
+// Middleware
+app.use(cors());
 app.use(bodyParser.json());
 
+// MySQL connection
 const connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
     database: 'user_database',
     user: 'root',
-    password:''
+    password: ''
 });
 
 connection.connect((err) => {
-    if(err){
-        console.log("error while connecting to the users_database");
+    if (err) {
+        console.log('Error connecting to database:', err);
         process.exit(1);
-    }else{
-        console.log("succesfuly connected");
-
+    } else {
+        console.log('Successfully connected to the database');
     }
 });
 
-// endpoint to fetch the user data based on the userId from the chat.php
+// Socket.IO connection
+io.on('connection', (socket) => {
+    console.log(`A user connected: ${socket.id}`);
 
+    // Listen for a user joining their personal "room"
+    socket.on('joinRoom', (userId) => {
+        console.log(`User with ID ${userId} joined their personal room.`);
+        socket.join(userId); // Join a room named after the user's ID
+    });
+
+    // Handle incoming chat messages
+    socket.on('chatMessage', ({ senderId, receiverId, text }) => {
+        console.log(`Message from ${senderId} to ${receiverId}: ${text}`);
+
+        // Send the message to the recipient's room
+        io.to(receiverId).emit('message', { senderId, text });
+    });
+
+    // Handle disconnect
+    socket.on('disconnect', () => {
+        console.log(`User disconnected: ${socket.id}`);
+    });
+});
+
+
+// API endpoints
 app.post('/getUserData', (req, res) => {
-    console.log('Request Body:', req.body); // Log the request body
-
-    const userId = req.body.user_id; // Get the user ID from the body
+    const userId = req.body.user_id;
     if (!userId) {
-        return res.status(400).json({ error: "User ID is required" }); // Return an error if no user_id is provided
+        return res.status(400).json({ error: 'User ID is required' });
     }
-
-    console.log('User ID:', userId);  // Log userId to confirm it's received properly
 
     connection.query('SELECT * FROM users WHERE id = ?', [userId], (err, results) => {
         if (err) {
-            console.error('Database error:', err); // Log database error
-            return res.status(500).json({ error: "Database failure", details: err });
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database failure', details: err });
         }
 
-        
         if (results.length > 0) {
-            const user_name = results[0].username;
-            console.log('Sending user name :', user_name);
-            return res.json({ userData: user_name });
+            const username = results[0].username;
+            res.json({ userData: username });
         } else {
-            // Return a "User not found" message if no user matches
-            console.log('No user found');
-            return res.status(404).json({ error: "User not found!" });
+            res.status(404).json({ error: 'User not found' });
         }
     });
 });
 
-const PORT = 3000; 
-app.listen(PORT, () => {
+app.post('/getAllUsers', (req, res) => {
+    const currentUserId = req.body.user_id;
+
+    if (!currentUserId) {
+        return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    connection.query('SELECT id, username FROM users WHERE id != ?', [currentUserId], (err, results) => {
+        if (err) {
+            console.error('Database error:', err);
+            return res.status(500).json({ error: 'Database failure', details: err });
+        }
+
+        res.json({ users: results });
+    });
+});
+
+// Start the server
+const PORT = 3000;
+server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
