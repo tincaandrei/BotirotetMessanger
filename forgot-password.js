@@ -1,3 +1,168 @@
+document.getElementById("id-mail-sent").addEventListener("click", function () {
+    const emailInput = document.querySelector('input[name="email"]');
+    const email = emailInput.value;
+    const mailSentIcon = document.getElementById("id-mail-sent");
+    const countdownContainer = document.getElementById("countdown-container");
+    const countdownTimer = document.getElementById("countdown-timer");
+    const messageContainer = document.querySelector('.message-container');
+
+    if (!email) {
+        alert("Please enter your email address.");
+        return;
+    }
+
+    fetch('forgot-password.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `email=${encodeURIComponent(email)}`
+    })
+        .then(response => response.json())
+        .then(data => {
+            messageContainer.innerHTML = '';
+            if (data.status === 'success') {
+                mailSentIcon.innerHTML = "&#10003;";
+                mailSentIcon.style.pointerEvents = "none";
+                sessionStorage.setItem('otp', data.otp);
+
+                countdownContainer.style.display = "block";
+                let countdown = 30;
+                countdownTimer.innerText = countdown;
+
+                const interval = setInterval(() => {
+                    countdown--;
+                    countdownTimer.innerText = countdown;
+
+                    if (countdown === 0) {
+                        clearInterval(interval);
+                        countdownContainer.style.display = "none";
+                        mailSentIcon.innerHTML = "&#128232;";
+                        mailSentIcon.style.pointerEvents = "auto";
+                        messageContainer.innerHTML = '';
+                    }
+                }, 1000);
+
+                
+                messageContainer.innerHTML = `<div class="success-message">${data.message}</div>`;
+            } else {
+                
+                messageContainer.innerHTML = `<div class="error-message">${data.message}</div>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            messageContainer.innerHTML = `<div class="error-message">An unexpected error occurred. Please try again later.</div>`;
+        });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const otpInput = document.getElementById('otp-input');
+    const passwordInput = document.querySelector('input[name="password"]');
+    const confirmPasswordInput = document.querySelector('input[name="confirm_password"]');
+    const submitButton = document.querySelector('.submit-button');
+    const messageContainer = document.querySelector('.message-container');
+
+    let isOtpValid = false; 
+    let arePasswordsMatching = false; 
+
+
+    otpInput.addEventListener('input', function () {
+        const enteredOtp = otpInput.value;
+        const correctOtp = sessionStorage.getItem('otp');
+
+        if (enteredOtp.length === 6) {
+            if (enteredOtp === correctOtp) {
+                otpInput.style.backgroundColor = "lightgreen"; 
+                isOtpValid = true;
+            } else {
+                otpInput.style.backgroundColor = "lightcoral";
+                isOtpValid = false;
+            }
+        } else {
+            otpInput.style.backgroundColor = "";
+            isOtpValid = false;
+        }
+
+        validateForm();
+    });
+
+    passwordInput.addEventListener('input', checkPasswords);
+    confirmPasswordInput.addEventListener('input', checkPasswords);
+
+    function checkPasswords() {
+        if (passwordInput.value === confirmPasswordInput.value && passwordInput.value.length > 0) {
+            passwordInput.style.backgroundColor = "lightgreen";
+            confirmPasswordInput.style.backgroundColor = "lightgreen";
+            arePasswordsMatching = true;
+        } else {
+            passwordInput.style.backgroundColor = ""; 
+            confirmPasswordInput.style.backgroundColor = ""; 
+            arePasswordsMatching = false;
+        }
+
+        validateForm();
+    }
+
+
+    function validateForm() {
+        if (isOtpValid && arePasswordsMatching) {
+            submitButton.disabled = false; 
+        } else {
+            submitButton.disabled = true; 
+        }
+    }
+
+    document.querySelector('form').addEventListener('submit', function (event) {
+        if (!isOtpValid) {
+            event.preventDefault();
+            messageContainer.innerHTML = `<div class="error-message">Invalid OTP code.</div>`;
+        } else if (!arePasswordsMatching) {
+            event.preventDefault();
+            messageContainer.innerHTML = `<div class="error-message">Passwords do not match.</div>`;
+        } else {
+            messageContainer.innerHTML = ''; 
+        }
+    });
+});
+
+document.querySelector('form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const emailInput = document.querySelector('input[name="email"]');
+    const passwordInput = document.querySelector('input[name="password"]');
+
+    const formData = new FormData();
+    formData.append('email', emailInput.value);
+    formData.append('password', passwordInput.value);
+
+    fetch('verify-otp-pass.php', {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => {
+            const messageContainer = document.querySelector('.message-container');
+            messageContainer.innerHTML = '';
+
+            if (data.status === 'success') {
+                messageContainer.innerHTML = `<div class="success-message">${data.message}</div>`;
+                messageContainer.scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500); 
+            } else {
+                messageContainer.innerHTML = `<div class="error-message">${data.message}</div>`;
+                messageContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const messageContainer = document.querySelector('.message-container');
+            messageContainer.innerHTML = `<div class="error-message">An unexpected error occurred. Please try again later.</div>`;
+        });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     // Reference to the eye icon and password input field
     const eyeIcon = document.getElementById('eye-icon');
@@ -39,34 +204,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
-
-document.getElementById("id-mail-sent").addEventListener("click", function () {
-    const mailSentIcon = document.getElementById("id-mail-sent");
-    const countdownContainer = document.getElementById("countdown-container");
-    const countdownText = document.getElementById("countdown-text");
-    const countdownTimer = document.getElementById("countdown-timer");
-
-    // Change the icon to a check mark
-    mailSentIcon.innerHTML = "&#10003;"; // Unicode for check mark (✔)
-    mailSentIcon.style.pointerEvents = "none"; // Disable further clicks during timeout
-
-    // Show the countdown container
-    countdownContainer.style.display = "block";
-
-    let countdown = 30;
-    countdownTimer.innerText = countdown;
-
-    // Start the countdown
-    const interval = setInterval(() => {
-        countdown--;
-        countdownTimer.innerText = countdown;
-
-        if (countdown === 0) {
-            clearInterval(interval); // Stop the countdown
-            countdownContainer.style.display = "none"; // Hide the countdown text
-            mailSentIcon.innerHTML = "&#128232;"; // Revert to mail icon (📬)
-            mailSentIcon.style.pointerEvents = "auto"; // Re-enable the icon click
-        }
-    }, 1000); // Update every second
-});
-

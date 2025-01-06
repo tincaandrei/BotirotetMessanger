@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['otp'] = $otp;
                 //send email with the otp to the user
                 
-                $title = "Your OTP";
+                $title = "2FA verification key";
                 mail($row['email'], $title, "Here is your one time login key:    $otp");
 
                 $response = ["status" => "success", "redirect" => "2facodeentry.php"];              
