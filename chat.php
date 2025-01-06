@@ -41,7 +41,6 @@ $user_id = $_SESSION['user_id'];
             <!-- Zona de scriere mesaje -->
             <div class="message-input">
                 <input type="text" id="message-input" placeholder="Type a message...">
-                <button type="submit" id="send-btn">Send</button>
             </div>
         </div>
     </div>
@@ -110,31 +109,33 @@ $user_id = $_SESSION['user_id'];
         }
 
         // Send a message
-        document.getElementById('send-btn').addEventListener('click', () => {
-            const messageInput = document.getElementById('message-input');
-            const message = messageInput.value.trim();
+        document.getElementById('message-input').addEventListener('keypress', function(e){
+            if(e.key === 'Enter'){
+                const messageInput = document.getElementById('message-input');
+                const message = messageInput.value.trim();
 
-            if (!selectedFriendId || !message) {
-                alert('Please select a friend and enter a message.');
-                return;
+                if (!selectedFriendId || !message) {
+                    alert('Please select a friend and enter a message.');
+                    return;
+                }
+
+                // Emit the message to the server
+                socket.emit('chatMessage', {
+                    senderId: userId,
+                    receiverId: selectedFriendId,
+                    text: message
+                });
+
+                // Display the sent message in the chat box
+                const chatBox = document.getElementById('chat-box');
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', 'sent');
+                messageElement.innerText = message;
+                chatBox.appendChild(messageElement);
+
+                // Clear the message input
+                messageInput.value = '';
             }
-
-            // Emit the message to the server
-            socket.emit('chatMessage', {
-                senderId: userId,
-                receiverId: selectedFriendId,
-                text: message
-            });
-
-            // Display the sent message in the chat box
-            const chatBox = document.getElementById('chat-box');
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message', 'sent');
-            messageElement.innerText = message;
-            chatBox.appendChild(messageElement);
-
-            // Clear the message input
-            messageInput.value = '';
         });
 
         // Receive a message
