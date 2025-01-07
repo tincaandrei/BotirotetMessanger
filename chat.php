@@ -88,16 +88,7 @@ $user_id = $_SESSION['user_id'];
         })
         .catch(err => console.error('Error fetching user list:', err));
 
-        // Initialize Socket.IO
-        const socket = io('http://localhost:3000', { transports: ['websocket'] });
-
-        socket.on('connect', () => {
-            console.log(`Connected to Socket.IO server with ID: ${socket.id}`);
-            socket.emit('joinRoom', userId); // Join the room named after the user's ID
-        });
-
-        // Handle connection errors
-        socket.on('connect_error', (err) => console.error('Connection error:', err));
+       
 
         // Select a friend to chat with
         function startChatWithUser(otherUserId, otherUsername) {
@@ -106,7 +97,35 @@ $user_id = $_SESSION['user_id'];
 
             document.getElementById('selected-friend').innerText = `Selected friend: ${otherUsername}`;
             document.getElementById('chat-box').innerHTML = ''; // Clear chat for new conversation
+            //fetching previous messages
+
+            fetch('http://localhost:3000/getMessages',{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: userId, friendId: otherUserId })
+
+            })
+            .then(response => response.json())
+            .then(data => {
+                //debugging messages
+                console.log('Message recieved from the server: ', data);
+                
+
+
+                const chatBox = document.getElementById('chat-box');
+                data.messages.forEach(msg => {
+                    //more debugging messages
+                    console.log('Rendering message : ', msg.text);
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('message', msg.sender_id === userId ? 'sent' : 'received');
+                    messageElement.innerText = msg.text;
+                    chatBox.appendChild(messageElement);
+                });
+            })
+            .catch(err => console.error('error fetching messges from conversation',err));
         }
+
+        
 
         // Send a message
         document.getElementById('message-input').addEventListener('keypress', function(e){
@@ -131,6 +150,7 @@ $user_id = $_SESSION['user_id'];
                 const messageElement = document.createElement('div');
                 messageElement.classList.add('message', 'sent');
                 messageElement.innerText = message;
+                
                 chatBox.appendChild(messageElement);
 
                 // Clear the message input
@@ -138,6 +158,16 @@ $user_id = $_SESSION['user_id'];
             }
         });
 
+         // Initialize Socket.IO
+        const socket = io('http://localhost:3000', { transports: ['websocket'] });
+
+        socket.on('connect', () => {
+            console.log(`Connected to Socket.IO server with ID: ${socket.id}`);
+            socket.emit('joinRoom', userId); // Join the room named after the user's ID
+        });
+
+        // Handle connection errors
+        socket.on('connect_error', (err) => console.error('Connection error:', err));
         // Receive a message
         socket.on('message', (data) => {
             console.log('Message received:', data);
@@ -153,34 +183,5 @@ $user_id = $_SESSION['user_id'];
         });
     </script>
 
-    <style>
-        .message {
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 10px;
-            max-width: 60%;
-            word-wrap: break-word;
-        }
-        .sent {
-            background-color: #d1e7dd;
-            text-align: right;
-            margin-left: auto;
-        }
-        .received {
-            background-color: #f8d7da;
-            text-align: left;
-            margin-right: auto;
-        }
-        .friend {
-            padding: 10px;
-            cursor: pointer;
-            border: 1px solid #ccc;
-            margin: 5px 0;
-            border-radius: 5px;
-        }
-        .friend:hover {
-            background-color: #f0f0f0;
-        }
-    </style>
 </body>
 </html>

@@ -4,6 +4,7 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const { error } = require('console');
 
 const app = express();
 const server = http.createServer(app);
@@ -50,6 +51,18 @@ io.on('connection', (socket) => {
     socket.on('chatMessage', ({ senderId, receiverId, text }) => {
         console.log(`Message from ${senderId} to ${receiverId}: ${text}`);
 
+
+        //insert the message in the database query
+        connection.query(
+            'INSERT INTO messages (sender_id, receiver_id, text) VALUES (?, ?, ?)',
+            [senderId,receiverId,text],
+            (err) => {
+                if (err){
+                    console.error('Failed to save message', err);
+                }
+                console.log('Message sent succesfully');
+            }
+        )
         // Send the message to the recipient's room
         io.to(receiverId).emit('message', { senderId, text });
     });
@@ -100,6 +113,28 @@ app.post('/getAllUsers', (req, res) => {
     });
 });
 
+
+app.post('/getMessages', (req, res) =>{
+    const {userId, friendId} = req.body;
+    if(!userId || !friendId){
+        console.error('User IDs are required');
+        return res.status(400).json({ error: 'User IDs are required' });
+    }
+    connection.query(
+        'SELECT sender_id, receiver_id, text, created_at FROM messages WHERE ' +
+        '(sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) ORDER BY created_at',
+        [userId, friendId, friendId, userId], 
+        (err, results) => {
+            if (err) {
+                console.error('Database error: Failed to fetch messages', err);
+                return res.status(500).json({ error: 'Database error' });
+            }
+            console.log('Messages fetched:', results);
+            res.json({ messages: results });
+        }
+    );
+    
+});
 // Start the server
 const PORT = 3000;
 server.listen(PORT, () => {
