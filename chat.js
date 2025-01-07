@@ -51,29 +51,6 @@ io.on('connection', (socket) => {
     socket.on('chatMessage', ({ senderId, receiverId, text }) => {
         console.log(`Message from ${senderId} to ${receiverId}: ${text}`);
 
-
-        //insert the message in the database query
-        connection.query(
-            'INSERT INTO messages (sender_id, receiver_id, text) VALUES (?, ?, ?)',
-            [senderId,receiverId,text],
-            (err) => {
-                if (err){
-                    console.error('Failed to save message', err);
-                }
-                console.log('Message sent succesfully');
-            }
-        )
-        // Send the message to the recipient's room
-        io.to(receiverId).emit('message', { senderId, text });
-    });
-
-    // Handle disconnect
-    socket.on('disconnect', () => {
-        console.log(`User disconnected: ${socket.id}`);
-    });
-});
-
-
 // API endpoints
 app.post('/getUserData', (req, res) => {
     const userId = req.body.user_id;
@@ -135,7 +112,6 @@ app.post('/getMessages', (req, res) =>{
     );
     
 });
-
 // Start the server
 const PORT = 3000;
 server.listen(PORT, () => {
