@@ -158,7 +158,9 @@ $user_id = $_SESSION['user_id'];
                 const messageElement = document.createElement('div');
                 messageElement.classList.add('message', 'sent');
                 messageElement.innerText = message;
-                
+               
+
+
                 chatBox.appendChild(messageElement);
 
                 // Clear the message input
@@ -189,6 +191,9 @@ $user_id = $_SESSION['user_id'];
                 chatBox.appendChild(messageElement);
             }
         });
+
+        
+        
 
         
     </script>
