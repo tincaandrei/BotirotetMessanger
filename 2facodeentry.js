@@ -29,3 +29,4 @@ inputs.forEach((input, index) => {
         }
     });
 });
+
