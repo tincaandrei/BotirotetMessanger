@@ -16,17 +16,49 @@ $user_id = $_SESSION['user_id'];
     <div class="container">
         <!-- Sidebar cu prieteni -->
         <div class="sidebar">
-            <!-- Username -->
             <div class="username" id="username">Welcome back, </div>
-
+            <div class="friends" id="user-list">
+                <!-- List of friends to be dynamically added here -->
             </div>
         </div>
         
         <!-- Zona de chat -->
         <div class="chat-area">
+            <!-- Bara de căutare și imagine profil -->
+            <div>
+                <input type="checkbox" class="checkbox" id="chk" />
+                <label class="label" for="chk">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                    <div class="ball"></div>
+                </label>
+            </div>
+            <div class="header">
+                <div class="selected-friend" id="selected-friend">Selected friend: None</div>
+                <div class="search-bar">
+                    <input type="text" id="user-search-input" placeholder="Search...">
+                    <span class="search-icon">🔍</span>
+                </div>
+            </div>
 
+            <!-- Mesaje -->
+            <div class="chat-box" id="chat-box">
+                <!-- Messages will be dynamically added here -->
+            </div>
+            
+            <!-- Zona de scriere mesaje -->
+            <div class="message-input">
+                <input type="text" id="message-input" placeholder="Type a message...">
+            </div>
+        </div>
+    </div>
 
-        // Fetch user data (backend Node.js)
+    <script>
+        const userId = <?php echo $_SESSION['user_id']; ?>;  // Injected by PHP
+        let selectedFriendId = null; // ID of the friend to chat with
+        let selectedFriendName = null; // Name of the friend
+
+        // Fetch user data from the Node.js backend
         fetch('http://localhost:3000/getUserData', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -38,7 +70,7 @@ $user_id = $_SESSION['user_id'];
         })
         .catch(err => console.error('Error fetching user data:', err));
 
-
+        // Fetch all users for the friends list
         fetch('http://localhost:3000/getAllUsers', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -48,7 +80,15 @@ $user_id = $_SESSION['user_id'];
         .then(data => {
             const userListContainer = document.getElementById('user-list');
 
+            // Populate the user list dynamically
+            data.users.forEach(user => {
+                const userElement = document.createElement('div');
+                userElement.classList.add('friend');
+                userElement.innerText = user.username;
+                userElement.dataset.userId = user.id; // Store user ID for later use
+                userListContainer.appendChild(userElement);
 
+                // Attach the click event handler
                 userElement.addEventListener('click', () => {
                     startChatWithUser(user.id, user.username);
                 });
@@ -56,28 +96,108 @@ $user_id = $_SESSION['user_id'];
         })
         .catch(err => console.error('Error fetching user list:', err));
 
+       
 
+        // Select a friend to chat with
+        function startChatWithUser(otherUserId, otherUsername) {
+            selectedFriendId = otherUserId;
+            selectedFriendName = otherUsername;
+
+            document.getElementById('selected-friend').innerText = `Selected friend: ${otherUsername}`;
+            document.getElementById('chat-box').innerHTML = ''; // Clear chat for new conversation
+            //fetching previous messages
+
+            fetch('http://localhost:3000/getMessages',{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: userId, friendId: otherUserId })
+
+            })
+            .then(response => response.json())
+            .then(data => {
+                //debugging messages
+                console.log('Message recieved from the server: ', data);
+                
+
+
+                const chatBox = document.getElementById('chat-box');
+                data.messages.forEach(msg => {
+                    //more debugging messages
+                    console.log('Rendering message : ', msg.text);
                     const messageElement = document.createElement('div');
                     messageElement.classList.add('message', msg.sender_id === userId ? 'sent' : 'received');
                     messageElement.innerText = msg.text;
                     chatBox.appendChild(messageElement);
                 });
             })
+            .catch(err => console.error('error fetching messges from conversation',err));
+        }
 
+        
+
+        // Send a message
+        document.getElementById('message-input').addEventListener('keypress', function(e){
+            if(e.key === 'Enter'){
                 const messageInput = document.getElementById('message-input');
                 const message = messageInput.value.trim();
 
                 if (!selectedFriendId || !message) {
+                    alert('Please select a friend and enter a message.');
+                    return;
+                }
 
+                // Emit the message to the server
                 socket.emit('chatMessage', {
                     senderId: userId,
                     receiverId: selectedFriendId,
                     text: message
                 });
 
-
+                // Display the sent message in the chat box
                 const chatBox = document.getElementById('chat-box');
                 const messageElement = document.createElement('div');
                 messageElement.classList.add('message', 'sent');
                 messageElement.innerText = message;
+               
 
+
+                chatBox.appendChild(messageElement);
+
+                // Clear the message input
+                messageInput.value = '';
+            }
+        });
+
+         // Initialize Socket.IO
+        const socket = io('http://localhost:3000', { transports: ['websocket'] });
+
+        socket.on('connect', () => {
+            console.log(`Connected to Socket.IO server with ID: ${socket.id}`);
+            socket.emit('joinRoom', userId); // Join the room named after the user's ID
+        });
+
+        // Handle connection errors
+        socket.on('connect_error', (err) => console.error('Connection error:', err));
+        // Receive a message
+        socket.on('message', (data) => {
+            console.log('Message received:', data);
+
+            // Display the message only if it's from the selected friend
+            if (data.senderId === selectedFriendId) {
+                const chatBox = document.getElementById('chat-box');
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', 'received');
+                messageElement.innerText = data.text;
+                chatBox.appendChild(messageElement);
+            }
+        });
+
+        
+        
+
+        
+    </script>
+
+    
+</body>
+</html>

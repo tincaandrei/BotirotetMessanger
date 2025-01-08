@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Form</title>
+  <link rel="stylesheet" href="styleREGISTER.css">
+</head>
+<body style="background-image: url('register.jpg'); background-size: cover;">
+
+  
+  <div class="container">
+    <div class="register-box">
+      <h1>Register</h1>
+      <form id="register-form"> <!-- Elimină `action` -->
+        <div class="input-box">
+          <input type="text" name="username" placeholder="Username" required>
+          <span class="icon">&#128100;</span>
+        </div>
+        <div class="input-box">
+          <input type="email" name="email" placeholder="Email" required>
+          <span class="icon">&#128231;</span>
+        </div>
+        <div class="input-box">
+          <input type="password" name="password" placeholder="Password" required>
+          <span class="icon">&#128274;</span>
+          <span data-group="eye" class="icon" id="eye-icon">&#128065;</span>
+        </div>
+        <div class="input-box">
+          <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+          <span class="icon">&#128274;</span>
+          <span data-group="eye" class="icon" id="eye-icon_2">&#128065;</span>
+        </div>
+        <div class="input-box">
+          <input type="text" name="phone_number" placeholder="Phone Number" required>
+          <span class="icon">&#128222;</span>
+        </div>
+        <div class="options">
+          <label> <input type="checkbox" name="use2fa"> Use 2Fa</label>
+        </div>
+        
+        <button type="submit" class="register-button">Register</button>
+      </form>
+      <div class="message-container"></div> <!-- Container pentru mesaje -->
+      <p class="login">Already have an account? <a href="login.html">Login</a></p>
+    </div>
+  </div>
+  <script src="register.js"></script>
+</body>
+</html>
