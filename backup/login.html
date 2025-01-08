@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Form</title>
+  <link rel="stylesheet" href="styleLOGIN.css">
+</head>
+<body>
+  <div class="container">
+    <div class="login-box">
+      <h1>Login</h1>
+      <form action="login.php" method="post">
+        <div class="input-box">
+          <input type="text" name="username" placeholder="Username" required>
+          <span class="icon">&#128100;</span>
+        </div>
+        <div class="input-box">
+          <input type="password" name="password" placeholder="Password" required>
+          <span class="icon">&#128274;</span>
+          <span class="icon" id="eye-icon">&#128065;</span>
+        </div>
+        <div class="options">
+          <label><input style= "margin-left: 8px;"type="checkbox" name="remember"> Remember me</label>
+        </div>
+        <input type="hidden" name="custom_session_id" id="custom-session-id">
+        <button type="submit" class="login-button">Login</button>
+        <div class="message-container"></div> <!-- Container pentru mesaje -->
+        <p class="register">Don't have an account? <a href="register.html">Register</a> <br>
+        Forgot password? <a href="forgot-password.html">Click here</a></p>
+      </form>
+    </div>
+  </div>
+  <script src="login.js">
+  </script> <!-- Include fișierul register.js -->
+</body>
+</html>
+

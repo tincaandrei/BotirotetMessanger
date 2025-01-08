@@ -1,0 +1,79 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  background-color: #222;
+}
+
+.container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: flex 0.5s ease;
+  color: black;
+  font-size: 2em;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.login {
+  background-color: #FFD700; /* Galben */
+}
+
+.register {
+  background-color: #1E90FF; /* Albastru */
+}
+
+.panel:hover {
+  flex: 3;
+}
+
+.logo {
+  background-color: #FFFFFF; /* Fundal alb pentru logo */
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default; /* Cursor standard, neapasabil */
+  pointer-events: none; /* Dezactivează evenimentele de click pe logo */
+}
+
+.logo img {
+  width: 300px; /* Ajustează dimensiunea logo-ului */
+  height: auto;
+}
+
+.text {
+  position: relative;
+  z-index: 1;
+  pointer-events: auto; /* Asigură-te că linkurile sunt clicabile */
+}
+
+.success-message {
+  color: green; /* Green text for success */
+  background-color: #e6ffe6; /* Light green background */
+  border: 1px solid #4caf50; /* Green border */
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: center;
+}
