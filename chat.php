@@ -43,7 +43,7 @@ $user_id = $_SESSION['user_id'];
 
 
     <!-- Mesaje -->
-    <div class="chat-box" id="chat-box">
+    <div class="chat-box" id="chat-box" style="overflow-y:scroll;  scrollbar-width: thin;  scrollbar-color: #3a3b3c transparent;    ; scroll-behavior: smooth; max-height: 530px;">
         <!-- Mesaje adăugate dinamic -->
     </div>
 
@@ -120,8 +120,22 @@ $user_id = $_SESSION['user_id'];
                     messageElement.innerText = msg.text;
                     chatBox.appendChild(messageElement);
                 });
-            })
-            .catch(err => console.error('Error fetching messages:', err));
+                
+                // Emit event to mark messages as read
+        socket.emit('markAsRead', { userId: userId, friendId: otherUserId });
+
+                // Remove unread notification badge for this friend
+                const friendElement = document.querySelector(`.friend[data-user-id="${otherUserId}"]`);
+                if (friendElement) {
+                    const unreadBadge = friendElement.querySelector('.unread-count');
+                    if (unreadBadge) {
+                        unreadBadge.remove();
+                    }
+                }
+
+                scrollToBottom();
+                })
+                .catch(err => console.error('Error fetching messages:', err));
         }
 
         // Trimitere mesaj
@@ -150,8 +164,44 @@ $user_id = $_SESSION['user_id'];
                 chatBox.appendChild(messageElement);
 
                 messageInput.value = ''; // Golește câmpul de input
-            }
+
+                // Remove unread notification for the recipient
+                const friendElement = document.querySelector(`.friend[data-user-id="${selectedFriendId}"]`);
+                if (friendElement) {
+                    const unreadBadge = friendElement.querySelector('.unread-count');
+                    if (unreadBadge) {
+                        unreadBadge.remove();
+                    }
+                }
+
+                scrollToBottom();
+
+                // Emit an event to mark messages as read
+                socket.emit('markAsRead', { userId, friendId: selectedFriendId });
+                    }
         });
+
+        fetch('http://localhost:3000/getUnreadCounts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId })
+        })
+        .then(response => response.json())
+        .then(data => {
+        const userListContainer = document.getElementById('user-list');
+
+        // Update friend list with unread counts
+        data.unreadCounts.forEach(({ sender_id, unread_count }) => {
+                const friendElement = document.querySelector(`.friend[data-user-id="${sender_id}"]`);
+                if (friendElement) {
+                    const unreadBadge = document.createElement('span');
+                    unreadBadge.classList.add('unread-count');
+                    unreadBadge.textContent = unread_count;
+                    friendElement.appendChild(unreadBadge);
+                }
+        });
+    });
+
 
         // Socket.IO initialization
         const socket = io('http://localhost:3000', { transports: ['websocket'] });
@@ -168,14 +218,57 @@ $user_id = $_SESSION['user_id'];
                 messageElement.classList.add('message', 'received');
                 messageElement.innerText = data.text;
                 chatBox.appendChild(messageElement);
+
+                const friendElement = document.querySelector(`.friend[data-user-id="${data.senderId}"]`);
+                if (friendElement) {
+                    const unreadBadge = friendElement.querySelector('.unread-count');
+                    if (unreadBadge) {
+                        unreadBadge.remove();
+                    }
+                }
+
+                scrollToBottom();
+
+                socket.emit('markAsRead', { userId, friendId: data.senderId });
             }
         });
+        socket.on('unreadCount', ({ senderId, unreadCount }) => {
+    const friendElement = document.querySelector(`.friend[data-user-id="${senderId}"]`);
+    if (friendElement) {
+        const unreadBadge = friendElement.querySelector('.unread-count');
+        if (unreadBadge) {
+            unreadBadge.textContent = unreadCount;
+        } else {
+            const newUnreadBadge = document.createElement('span');
+            newUnreadBadge.classList.add('unread-count');
+            newUnreadBadge.textContent = unreadCount;
+            friendElement.appendChild(newUnreadBadge);
+        }
+    }
+});
+
 
 
         function scrollToBottom() {
     const chatBox = document.getElementById('chat-box');
     chatBox.scrollTop = chatBox.scrollHeight;
 }
+
+// Search functionality for friends
+document.getElementById('user-search-input').addEventListener('input', function () {
+    const query = this.value.toLowerCase().trim(); // Get the search query and convert to lowercase
+    const friends = document.querySelectorAll('.friend'); // Select all friend elements
+
+    friends.forEach(friend => {
+        const username = friend.textContent.toLowerCase(); // Get the friend's name in lowercase
+        if (username.includes(query)) {
+            friend.style.display = 'flex'; // Show the friend if it matches the query
+        } else {
+            friend.style.display = 'none'; // Hide the friend if it doesn't match the query
+        }
+    });
+});
+
 
 // Adăugarea unui mesaj nou
 const chatBox = document.getElementById('chat-box');
